@@ -1,7 +1,7 @@
 #Create generations of images, selecting children for each successive generation based on their similarity to a given image
 
 from PIL import Image
-from random import randint
+import random
 
 #compare two images, getting a sum of the differences in color
 def get_difference(local_image1, local_image2):
@@ -32,26 +32,40 @@ class Characteristic:
     
     #initialize the instance of the characteristic
     #a triangle, with a randomly chosen position, size, and color
-    def __init__(self, total_image_width, total_image_height)
+    def __init__(self, total_image_width, total_image_height):
 
         #select x,y coordinates for each of the three points of the triangle
-        self.point_1_x = randint(0,total_image_width)
-        self.point_1_y = randint(0,total_image_height)
-        self.point_2_x = randint(0,total_image_width)
-        self.point_2_y = randint(0,total_image_height)
-        self.point_3_x = randint(0,total_image_width)
-        self.point_3_y = randint(0,total_image_height)
+        self.point_1_x = random.randint(0,total_image_width)
+        self.point_1_y = random.randint(0,total_image_height)
+        self.point_2_x = random.randint(0,total_image_width)
+        self.point_2_y = random.randint(0,total_image_height)
+        self.point_3_x = random.randint(0,total_image_width)
+        self.point_3_y = random.randint(0,total_image_height)
 
         #select the color
-        self.r = randint(0,255)
-        self.g = randint(0,255)
-        self.b = randint(0,255)
+        self.r = random.randint(0,255)
+        self.g = random.randint(0,255)
+        self.b = random.randint(0,255)
 
+    def characteristic_mutation(self):
+        #shall the red color change?
+        if random.random() < .20:
+            self.r = random.randint(0,255)
+
+        #shall the green color change?
+        if random.random() < .20:
+            self.g = random.randint(0,255)
+
+        #shall the blue color change?
+        if random.random() < .20:
+            self.b = random.randint(0,255)
+
+        
 
 class Organism:
 
-    def __init__(self, organism_width, organism_height)
-        #form three intial characteristics
+    def __init__(self, organism_width, organism_height):
+        #create a characteristic list for this organism
         self.characteristic_list = []
 
         #give the organism three initial characteristics
@@ -59,11 +73,17 @@ class Organism:
             self.characteristic_list.append(Characteristic(organism_width, organism_height))
 
 
-    #function for determining what to change?
+    #iterate through the characteristics, deciding whether to mutate
+    def mutate(self):
+        #the characteristic below needs to be a reference in a list of characteristics
+        for item in self.characteristic_list:
+            pass
 
 
 image1 = Image.open("elmerFudd.jpg")
 image2 = Image.open("elmerFuddExplode.jpg")
 
-get_difference(image1, image2)
+#get_difference(image1, image2)
+
+print(str(random.random()))
 
