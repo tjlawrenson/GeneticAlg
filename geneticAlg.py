@@ -104,9 +104,9 @@ class Organism:
     #iterate through the characteristics, deciding whether to mutate
     def mutate(self):
         #iterate through the characteristics, potentially mutating them
-        for item in self.characteristic_list:
+        for index in range(len(self.characteristic_list)):
             if random.random() < .50:
-                self.characteristic_list[item].characteristic_mutation(self.width, self.height)
+                self.characteristic_list[index].characteristic_mutation(self.width, self.height)
 
 
 image1 = Image.open("elmerFudd.jpg")
@@ -138,4 +138,26 @@ for item in range(len(organism1.characteristic_list)):
         organism1.characteristic_list[item].g, \
         organism1.characteristic_list[item].b))
 
-image2.save('C:\\temp\\myfirstimage.jpg')
+image2.save('C:\\temp\\image.jpg')
+
+organism1.mutate()
+
+image3 = Image.new('RGB', (target_image_width, target_image_height))
+
+draw = ImageDraw.Draw(image3)
+
+for item in range(len(organism1.characteristic_list)):
+    draw.polygon([(organism1.characteristic_list[item].point_1_x, \
+        organism1.characteristic_list[item].point_1_y), \
+        (organism1.characteristic_list[item].point_2_x, \
+        organism1.characteristic_list[item].point_2_y), \
+        (organism1.characteristic_list[item].point_3_x, \
+        organism1.characteristic_list[item].point_3_y)], \
+        fill=(organism1.characteristic_list[item].r, \
+        organism1.characteristic_list[item].g, \
+        organism1.characteristic_list[item].b), \
+        outline=(organism1.characteristic_list[item].r, \
+        organism1.characteristic_list[item].g, \
+        organism1.characteristic_list[item].b))
+
+image3.save('C:\\temp\\image_mutated.jpg')
