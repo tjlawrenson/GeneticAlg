@@ -137,11 +137,11 @@ class Organism:
                 self.characteristic_list[index].characteristic_mutation(self.width, self.height)
 
         #shall a characteristic be added?
-        if random.random() < .20:
+        if random.random() < .50:
             self.characteristic_list.append(Characteristic(self.width, self.height))
 
         #shall a characteristic be removed?
-        if random.random() < .20:
+        if random.random() < .25:
             self.characteristic_list.remove(random.choice(self.characteristic_list))
 
 
@@ -198,21 +198,21 @@ for y in range(1000):
         parent_organism = child1_organism #pointing the parent_organism variable to this object
         
         #print and re-assign the current sum of differences        
-        print("Generation: " + str(y) + "  Current sum: " + str(list_of_sums[0]), flush = True)
+        #print("Generation: " + str(y) + "  Current sum: " + str(list_of_sums[0]), flush = True)
         current_parent_difference = list_of_sums[0]
 
     elif list_of_sums[1] <= list_of_sums[0] and list_of_sums[1] <= list_of_sums[2] and list_of_sums[1] <= current_parent_difference:
         parent_organism = child2_organism #pointing the parent_organism variable to this object
 
         #print and re-assign the current sum of differences   
-        print("Generation: " + str(y) + "  Current sum: " + str(list_of_sums[1]), flush=True)
+        #print("Generation: " + str(y) + "  Current sum: " + str(list_of_sums[1]), flush=True)
         current_parent_difference = list_of_sums[1]
 
     elif list_of_sums[2] <= list_of_sums[0] and list_of_sums[2] <= list_of_sums[1] and list_of_sums[2] <= current_parent_difference:
         parent_organism = child3_organism #pointing the parent_organism variable to this object
         
         #print and re-assign the current sum of differences   
-        print("Generation: " + str(y) + "  Current sum: " + str(list_of_sums[2]), flush=True)
+        #print("Generation: " + str(y) + "  Current sum: " + str(list_of_sums[2]), flush=True)
         current_parent_difference = list_of_sums[2]
 
     #else the parent survives to have another generation of children!
@@ -225,8 +225,10 @@ for y in range(1000):
         parent_organism_image.save('C:\\temp\\current_parent_organism.jpg')
 
     #report the number of characteristics occasionally
-    if y % 10 == 0:
-        print("Number of characteristics in the current parent organism: " + str(len(parent_organism.characteristic_list)))
+    if y % 5 == 0:
+        print("Gen: " + str(y) + \
+            "  Characteristics: " + str(len(parent_organism.characteristic_list)) + \
+            "  Current sum difference: " + str(current_parent_difference), flush=True)
 
 
 
