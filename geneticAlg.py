@@ -39,18 +39,37 @@ def drawTheOrganism(local_organism, local_width, local_height):
     draw = ImageDraw.Draw(local_image)
 
     for item in range(len(local_organism.characteristic_list)):
-        draw.polygon([(local_organism.characteristic_list[item].point_1_x, \
-        local_organism.characteristic_list[item].point_1_y), \
-        (local_organism.characteristic_list[item].point_2_x, \
-        local_organism.characteristic_list[item].point_2_y), \
-        (local_organism.characteristic_list[item].point_3_x, \
-        local_organism.characteristic_list[item].point_3_y)], \
-        fill=(local_organism.characteristic_list[item].r, \
-        local_organism.characteristic_list[item].g, \
-        local_organism.characteristic_list[item].b), \
-        outline=(local_organism.characteristic_list[item].r, \
-        local_organism.characteristic_list[item].g, \
-        local_organism.characteristic_list[item].b))
+
+        #if this characteristic is a triangle, draw it
+        if local_organism.characteristic_list[item].shape == "triangle":
+            draw.polygon([(local_organism.characteristic_list[item].point_1_x, \
+            local_organism.characteristic_list[item].point_1_y), \
+            (local_organism.characteristic_list[item].point_2_x, \
+            local_organism.characteristic_list[item].point_2_y), \
+            (local_organism.characteristic_list[item].point_3_x, \
+            local_organism.characteristic_list[item].point_3_y)], \
+            fill=(local_organism.characteristic_list[item].r, \
+            local_organism.characteristic_list[item].g, \
+            local_organism.characteristic_list[item].b), \
+            outline=(local_organism.characteristic_list[item].r, \
+            local_organism.characteristic_list[item].g, \
+            local_organism.characteristic_list[item].b))
+
+
+        #if this characteristic is an ellipse, draw it
+        elif local_organism.characteristic_list[item].shape == "ellipse":
+            draw.ellipse((local_organism.characteristic_list[item].point_1_x, \
+            local_organism.characteristic_list[item].point_1_y, \
+            local_organism.characteristic_list[item].point_2_x, \
+            local_organism.characteristic_list[item].point_2_y), \
+            fill=(local_organism.characteristic_list[item].r, \
+            local_organism.characteristic_list[item].g, \
+            local_organism.characteristic_list[item].b), \
+            outline=(local_organism.characteristic_list[item].r, \
+            local_organism.characteristic_list[item].g, \
+            local_organism.characteristic_list[item].b))
+ 
+
 
     return local_image
 
@@ -62,7 +81,7 @@ class Characteristic:
     #a triangle, with a randomly chosen position, size, and color
     def __init__(self, total_image_width, total_image_height):
 
-        self.shape_list = ["triangle"]
+        self.shape_list = ["triangle", "ellipse"]
 
         #randomly choose a shape
         self.shape = random.choice(self.shape_list)
@@ -95,19 +114,28 @@ class Characteristic:
             while self.point_3_y not in range (total_image_height):
                 self.point_3_y = random.randint((self.point_1_y - 10), (self.point_1_y + 10))
 
-        
+        if self.shape == "ellipse":
+            #select x,y coordinates for the top-left and lower-right corners of the bounding box
+            #the upper left of this shape should not be in the far lower right
+            self.point_1_x = random.randint(0,(total_image_width - 10))
+            self.point_1_y = random.randint(0,(total_image_height - 10))
+
+            #ensure that the ellipse does not start off too large
+            self.point_2_x = random.randint((self.point_1_x + 1), (self.point_1_x + 9))
+            self.point_2_y = random.randint((self.point_1_y + 1), (self.point_1_y + 9))
+
 
     def characteristic_mutation(self, total_image_width, total_image_height):
         #shall the red color change?
-        if random.random() < .20:
+        if random.random() < .30:
             self.r = random.randint(0,255)
 
         #shall the green color change?
-        if random.random() < .20:
+        if random.random() < .30:
             self.g = random.randint(0,255)
 
         #shall the blue color change?
-        if random.random() < .20:
+        if random.random() < .30:
             self.b = random.randint(0,255)
 
         if self.shape == "triangle":
@@ -127,33 +155,57 @@ class Characteristic:
 
             #shall point_2_x change?
             if random.random() < .20:
-                self.point_2_x = random.randint((self.point_2_x - 10), (self.point_2_x + 10))
+                self.point_2_x = random.randint((self.point_1_x - 10), (self.point_1_x + 10))
                 #if this point is not within the organism/image, try again
                 while self.point_2_x not in range (total_image_width):
-                    self.point_2_x = random.randint((self.point_2_x - 10), (self.point_2_x + 10))
+                    self.point_2_x = random.randint((self.point_1_x - 10), (self.point_1_x + 10))
 
             #shall point_2_y change?
             if random.random() < .20:
-                self.point_2_y = random.randint((self.point_2_y - 10), (self.point_2_y + 10))
+                self.point_2_y = random.randint((self.point_1_y - 10), (self.point_1_y + 10))
                 #if this point is not within the organism/image, try again
                 while self.point_2_y not in range (total_image_height):
-                    self.point_2_y = random.randint((self.point_2_y - 10), (self.point_2_y + 10))
+                    self.point_2_y = random.randint((self.point_1_y - 10), (self.point_1_y + 10))
 
             #shall point_3_x change?
             if random.random() < .20:
-                self.point_3_x = random.randint((self.point_3_x - 10), (self.point_3_x + 10))
+                self.point_3_x = random.randint((self.point_1_x - 10), (self.point_1_x + 10))
                 #if this point is not within the organism/image, try again
                 while self.point_3_x not in range (total_image_width):
-                    self.point_3_x = random.randint((self.point_3_x - 10), (self.point_3_x + 10))
+                    self.point_3_x = random.randint((self.point_1_x - 10), (self.point_1_x + 10))
 
             #shall point_3_y change?
             if random.random() < .20:
-                self.point_3_y = random.randint((self.point_3_y - 10), (self.point_3_y + 10))
+                self.point_3_y = random.randint((self.point_1_y - 10), (self.point_1_y + 10))
                 #if this point is not within the organism/image, try again
                 while self.point_3_y not in range (total_image_height):
-                    self.point_3_y = random.randint((self.point_3_y - 10), (self.point_3_y + 10))
+                    self.point_3_y = random.randint((self.point_1_y - 10), (self.point_1_y + 10))
 
-        
+
+        if self.shape == "ellipse":
+            #for ellipses, if the organism called for a mutation, mutate the whole location and size
+            self.point_1_x = random.randint((self.point_1_x - 10), (self.point_1_x + 10))
+            #if this point is not within the organism/image, try again
+            while self.point_1_x not in range ((total_image_width - 10)):
+                self.point_1_x = random.randint((self.point_1_x - 10), (self.point_1_x + 10))
+
+            self.point_1_y = random.randint((self.point_1_y - 10), (self.point_1_y + 10))
+            #if this point is not within the organism/image, try again
+            while self.point_1_y not in range ((total_image_height - 10)):
+                self.point_1_y = random.randint((self.point_1_y - 10), (self.point_1_y + 10))
+
+            #stay within 30 pixels of the upper left x bound
+            self.point_2_x = random.randint((self.point_1_x + 1), (self.point_1_x + 30))
+            #if this point is not within the organism/image, try again
+            while self.point_2_x not in range (total_image_width):
+                self.point_2_x = random.randint((self.point_1_x + 1), (self.point_1_x + 30))
+
+            #stay within 30 pixels of the upper left y bound
+            self.point_2_y = random.randint((self.point_1_y + 1), (self.point_1_y + 30))
+            #if this point is not within the organism/image, try again
+            while self.point_2_y not in range (total_image_height):
+                self.point_2_y = random.randint((self.point_1_y + 1), (self.point_1_y + 30))
+
 
 class Organism:
 
@@ -210,7 +262,7 @@ parent_organism_image.save('C:\\temp\\_original_parent_organism.jpg')
 current_parent_difference = get_difference(parent_organism_image,target_image)
 
 #loop through the generations
-for y in range(500):
+for y in range(50000):
 
     #create three children
     child1_organism = copy.deepcopy(parent_organism)
