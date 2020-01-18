@@ -62,18 +62,40 @@ class Characteristic:
     #a triangle, with a randomly chosen position, size, and color
     def __init__(self, total_image_width, total_image_height):
 
-        #select x,y coordinates for each of the three points of the triangle
-        self.point_1_x = random.randint(0,total_image_width)
-        self.point_1_y = random.randint(0,total_image_height)
-        self.point_2_x = random.randint(0,total_image_width)
-        self.point_2_y = random.randint(0,total_image_height)
-        self.point_3_x = random.randint(0,total_image_width)
-        self.point_3_y = random.randint(0,total_image_height)
+        self.shape_list = ["triangle"]
 
+        #randomly choose a shape
+        self.shape = random.choice(self.shape_list)
+        
         #select the color
         self.r = random.randint(0,255)
         self.g = random.randint(0,255)
         self.b = random.randint(0,255)
+
+        if self.shape == "triangle":
+            #select x,y coordinates for each of the three points of the triangle
+            self.point_1_x = random.randint(0,total_image_width)
+            self.point_1_y = random.randint(0,total_image_height)
+
+            #ensure that this starts off as a small shape by keeping the other points close by
+            self.point_2_x = random.randint((self.point_1_x - 10), (self.point_1_x + 10))
+            while self.point_2_x not in range (total_image_width):
+                #choose another random point until we are inside the organism/image
+                self.point_2_x = random.randint((self.point_1_x - 10), (self.point_1_x + 10))
+            
+            self.point_2_y = random.randint((self.point_1_y - 10), (self.point_1_y + 10))
+            while self.point_2_y not in range (total_image_height):
+                self.point_2_y = random.randint((self.point_1_y - 10), (self.point_1_y + 10))
+
+            self.point_3_x = random.randint((self.point_1_x - 10), (self.point_1_x + 10))
+            while self.point_3_x not in range (total_image_width):
+                self.point_3_x = random.randint((self.point_1_x - 10), (self.point_1_x + 10))
+
+            self.point_3_y = random.randint((self.point_1_y - 10), (self.point_1_y + 10))
+            while self.point_3_y not in range (total_image_height):
+                self.point_3_y = random.randint((self.point_1_y - 10), (self.point_1_y + 10))
+
+        
 
     def characteristic_mutation(self, total_image_width, total_image_height):
         #shall the red color change?
@@ -88,29 +110,48 @@ class Characteristic:
         if random.random() < .20:
             self.b = random.randint(0,255)
 
-        #shall point_1_x change?
-        if random.random() < .20:
-            self.point_1_x = random.randint(0,total_image_width)
+        if self.shape == "triangle":
+            #shall point_1_x change?
+            if random.random() < .20:
+                self.point_1_x = random.randint((self.point_1_x - 10), (self.point_1_x + 10))
+                #if this point is not within the organism/image, try again
+                while self.point_1_x not in range (total_image_width):
+                    self.point_1_x = random.randint((self.point_1_x - 10), (self.point_1_x + 10))
 
-        #shall point_1_y change?
-        if random.random() < .20:
-            self.point_1_y = random.randint(0,total_image_height)
+            #shall point_1_y change?
+            if random.random() < .20:
+                self.point_1_y = random.randint((self.point_1_y - 10), (self.point_1_y + 10))
+                #if this point is not within the organism/image, try again
+                while self.point_1_y not in range (total_image_height):
+                    self.point_1_y = random.randint((self.point_1_y - 10), (self.point_1_y + 10))
 
-        #shall point_2_x change?
-        if random.random() < .20:
-            self.point_2_x = random.randint(0,total_image_width)
+            #shall point_2_x change?
+            if random.random() < .20:
+                self.point_2_x = random.randint((self.point_2_x - 10), (self.point_2_x + 10))
+                #if this point is not within the organism/image, try again
+                while self.point_2_x not in range (total_image_width):
+                    self.point_2_x = random.randint((self.point_2_x - 10), (self.point_2_x + 10))
 
-        #shall point_2_y change?
-        if random.random() < .20:
-            self.point_2_y = random.randint(0,total_image_height)
+            #shall point_2_y change?
+            if random.random() < .20:
+                self.point_2_y = random.randint((self.point_2_y - 10), (self.point_2_y + 10))
+                #if this point is not within the organism/image, try again
+                while self.point_2_y not in range (total_image_height):
+                    self.point_2_y = random.randint((self.point_2_y - 10), (self.point_2_y + 10))
 
-        #shall point_3_x change?
-        if random.random() < .20:
-            self.point_3_x = random.randint(0,total_image_width)
+            #shall point_3_x change?
+            if random.random() < .20:
+                self.point_3_x = random.randint((self.point_3_x - 10), (self.point_3_x + 10))
+                #if this point is not within the organism/image, try again
+                while self.point_3_x not in range (total_image_width):
+                    self.point_3_x = random.randint((self.point_3_x - 10), (self.point_3_x + 10))
 
-        #shall point_3_y change?
-        if random.random() < .20:
-            self.point_3_y = random.randint(0,total_image_height)
+            #shall point_3_y change?
+            if random.random() < .20:
+                self.point_3_y = random.randint((self.point_3_y - 10), (self.point_3_y + 10))
+                #if this point is not within the organism/image, try again
+                while self.point_3_y not in range (total_image_height):
+                    self.point_3_y = random.randint((self.point_3_y - 10), (self.point_3_y + 10))
 
         
 
@@ -137,7 +178,7 @@ class Organism:
                 self.characteristic_list[index].characteristic_mutation(self.width, self.height)
 
         #shall a characteristic be added?
-        if random.random() < .50:
+        if random.random() < .75:
             self.characteristic_list.append(Characteristic(self.width, self.height))
 
         #shall a characteristic be removed?
@@ -169,7 +210,7 @@ parent_organism_image.save('C:\\temp\\_original_parent_organism.jpg')
 current_parent_difference = get_difference(parent_organism_image,target_image)
 
 #loop through the generations
-for y in range(1000):
+for y in range(500):
 
     #create three children
     child1_organism = copy.deepcopy(parent_organism)
