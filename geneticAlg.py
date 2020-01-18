@@ -33,7 +33,7 @@ def get_difference(local_image1, local_image2):
 def drawTheOrganism(local_organism, local_width, local_height):
 
     #create an image variable with the given type, width, and height
-    local_image = Image.new('RGB', (local_width, local_height))
+    local_image = Image.new('RGB', (local_width, local_height), color = (255,255,255))
 
     #create a draw variable
     draw = ImageDraw.Draw(local_image)
@@ -136,8 +136,16 @@ class Organism:
             if random.random() < .50:
                 self.characteristic_list[index].characteristic_mutation(self.width, self.height)
 
+        #shall a characteristic be added?
+        if random.random() < .20:
+            self.characteristic_list.append(Characteristic(self.width, self.height))
 
-target_image = Image.open("elmerFudd.jpg")
+        #shall a characteristic be removed?
+        if random.random() < .20:
+            self.characteristic_list.remove(random.choice(self.characteristic_list))
+
+
+target_image = Image.open("target.jpg")
 #image2 = Image.open("elmerFuddExplode.jpg")
 #get_difference(image1, image2)
 
@@ -155,12 +163,13 @@ parent_organism = Organism(target_image_width, target_image_height)
 parent_organism_image = drawTheOrganism(parent_organism, target_image_width, target_image_height)
 
 #save the image to disk
-parent_organism_image.save('C:\\temp\\original_parent_organism.jpg')
+parent_organism_image.save('C:\\temp\\_original_parent_organism.jpg')
 
 #find the initial difference
 current_parent_difference = get_difference(parent_organism_image,target_image)
 
-for y in range(100):
+#loop through the generations
+for y in range(1000):
 
     #create three children
     child1_organism = copy.deepcopy(parent_organism)
@@ -189,21 +198,21 @@ for y in range(100):
         parent_organism = child1_organism #pointing the parent_organism variable to this object
         
         #print and re-assign the current sum of differences        
-        print("Current sum: " + str(list_of_sums[0]), flush = True)
+        print("Generation: " + str(y) + "  Current sum: " + str(list_of_sums[0]), flush = True)
         current_parent_difference = list_of_sums[0]
 
     elif list_of_sums[1] <= list_of_sums[0] and list_of_sums[1] <= list_of_sums[2] and list_of_sums[1] <= current_parent_difference:
         parent_organism = child2_organism #pointing the parent_organism variable to this object
 
         #print and re-assign the current sum of differences   
-        print("Current sum: " + str(list_of_sums[1]), flush=True)
+        print("Generation: " + str(y) + "  Current sum: " + str(list_of_sums[1]), flush=True)
         current_parent_difference = list_of_sums[1]
 
     elif list_of_sums[2] <= list_of_sums[0] and list_of_sums[2] <= list_of_sums[1] and list_of_sums[2] <= current_parent_difference:
         parent_organism = child3_organism #pointing the parent_organism variable to this object
         
         #print and re-assign the current sum of differences   
-        print("Current sum: " + str(list_of_sums[2]), flush=True)
+        print("Generation: " + str(y) + "  Current sum: " + str(list_of_sums[2]), flush=True)
         current_parent_difference = list_of_sums[2]
 
     #else the parent survives to have another generation of children!
@@ -211,49 +220,13 @@ for y in range(100):
     #create an image in memory to save to disk
     parent_organism_image = drawTheOrganism(parent_organism, target_image_width, target_image_height)
 
-    #save the image to disk
-    parent_organism_image.save('C:\\temp\\current_parent_organism.jpg')
+    #save the image to disk occasionally
+    if y % 5 == 0:
+        parent_organism_image.save('C:\\temp\\current_parent_organism.jpg')
+
+    #report the number of characteristics occasionally
+    if y % 10 == 0:
+        print("Number of characteristics in the current parent organism: " + str(len(parent_organism.characteristic_list)))
 
 
 
-#find the minimum
-# for i in list_of_sums:
-#     if i == 0:
-#         min_index = 0
-#     else:
-#         if list_of_sums[i] < list_of_sums[min_index]:
-#             min_index = i
-
-
-#
-
-
-# parent_organism.mutate()
-
-# image3 = Image.new('RGB', (target_image_width, target_image_height))
-
-# draw = ImageDraw.Draw(image3)
-
-# for item in range(len(organism1.characteristic_list)):
-#     draw.polygon([(organism1.characteristic_list[item].point_1_x, \
-#         organism1.characteristic_list[item].point_1_y), \
-#         (organism1.characteristic_list[item].point_2_x, \
-#         organism1.characteristic_list[item].point_2_y), \
-#         (organism1.characteristic_list[item].point_3_x, \
-#         organism1.characteristic_list[item].point_3_y)], \
-#         fill=(organism1.characteristic_list[item].r, \
-#         organism1.characteristic_list[item].g, \
-#         organism1.characteristic_list[item].b), \
-#         outline=(organism1.characteristic_list[item].r, \
-#         organism1.characteristic_list[item].g, \
-#         organism1.characteristic_list[item].b))
-
-# image3.save('C:\\temp\\image3.jpg')
-
-# sum1 = get_difference(image1,image2)
-
-# print("Image2 difference: ", sum1)
-
-# sum2 = get_difference(image1,image3)
-
-# print("Image3 difference: ", sum2)
