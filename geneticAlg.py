@@ -225,9 +225,15 @@ class Organism:
     #iterate through the characteristics, deciding whether to mutate
     def mutate(self):
         #iterate through the characteristics, potentially mutating them
+        #mutate a smaller percentage of characteristics if the number of characteristics is high
         for index in range(len(self.characteristic_list)):
-            if random.random() < .50:
-                self.characteristic_list[index].characteristic_mutation(self.width, self.height)
+            if len(self.characteristic_list) > 100:
+                if random.random() < .02:
+                    self.characteristic_list[index].characteristic_mutation(self.width, self.height)
+        else:
+            if random.random() < .10:
+                    self.characteristic_list[index].characteristic_mutation(self.width, self.height)
+
 
         #shall a characteristic be added?
         if random.random() < .75:
@@ -238,7 +244,7 @@ class Organism:
             self.characteristic_list.remove(random.choice(self.characteristic_list))
 
 
-target_image = Image.open("target.jpg")
+target_image = Image.open("c:/temp/target.jpg")
 #image2 = Image.open("elmerFuddExplode.jpg")
 #get_difference(image1, image2)
 
@@ -317,11 +323,13 @@ for y in range(50000):
     if y % 5 == 0:
         parent_organism_image.save('C:\\temp\\current_parent_organism.jpg')
 
-    #report the number of characteristics occasionally
+    #report some stats occasionally
     if y % 5 == 0:
+        #calculate highest possible color difference
+        max_color_difference = (target_image_width * target_image_height) * (255 * 3)
         print("Gen: " + str(y) + \
             "  Characteristics: " + str(len(parent_organism.characteristic_list)) + \
-            "  Current sum difference: " + str(current_parent_difference), flush=True)
+            "  Color percentage reached: " + str(100 * (max_color_difference -current_parent_difference) / max_color_difference), flush=True)
 
 
 
