@@ -228,7 +228,7 @@ class Organism:
         #mutate a smaller percentage of characteristics if the number of characteristics is high
         for index in range(len(self.characteristic_list)):
             if len(self.characteristic_list) > 100:
-                if random.random() < .02:
+                if random.random() < .01:
                     self.characteristic_list[index].characteristic_mutation(self.width, self.height)
         else:
             if random.random() < .10:
@@ -319,9 +319,15 @@ for y in range(50000):
     #create an image in memory to save to disk
     parent_organism_image = drawTheOrganism(parent_organism, target_image_width, target_image_height)
 
-    #save the image to disk occasionally
+    #save the image to disk occasionally (for ongoing visual)
     if y % 5 == 0:
         parent_organism_image.save('C:\\temp\\current_parent_organism.jpg')
+
+    #save the image to disk occasionally (for later video creation)
+    if y % 5 == 0:
+        #create a file path string
+        file_path_string = 'C:\\GenAlgImageData\\2020_01_20 Beach Ball\\current_parent_organism_gen' + str(y) + '.jpg'
+        parent_organism_image.save(file_path_string)
 
     #report some stats occasionally
     if y % 5 == 0:
