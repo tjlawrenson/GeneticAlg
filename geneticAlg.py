@@ -4,6 +4,14 @@ from PIL import Image,ImageDraw
 import random
 import copy
 
+
+#set the location and base file name of the images
+out_image_file_path = 'C:\\GenAlgImageData\\2020_01_29 pointy haired boss\\boss'
+
+#set the maximum initial characteristic size as a percentage of the original image width
+characteristic_percent = 8
+
+
 #compare two images, getting a sum of the differences in color
 def get_difference(local_image1, local_image2):
     
@@ -97,32 +105,32 @@ class Characteristic:
             self.point_1_y = random.randint(0,total_image_height)
 
             #ensure that this starts off as a small shape by keeping the other points close by
-            self.point_2_x = random.randint((self.point_1_x - 10), (self.point_1_x + 10))
+            self.point_2_x = random.randint((self.point_1_x - max_initial_characteristic_pixels), (self.point_1_x + max_initial_characteristic_pixels))
             while self.point_2_x not in range (total_image_width):
                 #choose another random point until we are inside the organism/image
-                self.point_2_x = random.randint((self.point_1_x - 10), (self.point_1_x + 10))
+                self.point_2_x = random.randint((self.point_1_x - max_initial_characteristic_pixels), (self.point_1_x + max_initial_characteristic_pixels))
             
-            self.point_2_y = random.randint((self.point_1_y - 10), (self.point_1_y + 10))
+            self.point_2_y = random.randint((self.point_1_y - max_initial_characteristic_pixels), (self.point_1_y + max_initial_characteristic_pixels))
             while self.point_2_y not in range (total_image_height):
-                self.point_2_y = random.randint((self.point_1_y - 10), (self.point_1_y + 10))
+                self.point_2_y = random.randint((self.point_1_y - max_initial_characteristic_pixels), (self.point_1_y + max_initial_characteristic_pixels))
 
-            self.point_3_x = random.randint((self.point_1_x - 10), (self.point_1_x + 10))
+            self.point_3_x = random.randint((self.point_1_x - max_initial_characteristic_pixels), (self.point_1_x + max_initial_characteristic_pixels))
             while self.point_3_x not in range (total_image_width):
-                self.point_3_x = random.randint((self.point_1_x - 10), (self.point_1_x + 10))
+                self.point_3_x = random.randint((self.point_1_x - max_initial_characteristic_pixels), (self.point_1_x + max_initial_characteristic_pixels))
 
-            self.point_3_y = random.randint((self.point_1_y - 10), (self.point_1_y + 10))
+            self.point_3_y = random.randint((self.point_1_y - max_initial_characteristic_pixels), (self.point_1_y + max_initial_characteristic_pixels))
             while self.point_3_y not in range (total_image_height):
-                self.point_3_y = random.randint((self.point_1_y - 10), (self.point_1_y + 10))
+                self.point_3_y = random.randint((self.point_1_y - max_initial_characteristic_pixels), (self.point_1_y + max_initial_characteristic_pixels))
 
         if self.shape == "ellipse":
             #select x,y coordinates for the top-left and lower-right corners of the bounding box
             #the upper left of this shape should not be in the far lower right
-            self.point_1_x = random.randint(0,(total_image_width - 10))
-            self.point_1_y = random.randint(0,(total_image_height - 10))
+            self.point_1_x = random.randint(0,(total_image_width - max_initial_characteristic_pixels))
+            self.point_1_y = random.randint(0,(total_image_height - max_initial_characteristic_pixels))
 
             #ensure that the ellipse does not start off too large
-            self.point_2_x = random.randint((self.point_1_x + 1), (self.point_1_x + 9))
-            self.point_2_y = random.randint((self.point_1_y + 1), (self.point_1_y + 9))
+            self.point_2_x = random.randint((self.point_1_x + 1), (self.point_1_x + max_initial_characteristic_pixels))
+            self.point_2_y = random.randint((self.point_1_y + 1), (self.point_1_y + max_initial_characteristic_pixels))
 
 
     def characteristic_mutation(self, total_image_width, total_image_height):
@@ -244,24 +252,24 @@ class Organism:
             self.characteristic_list.remove(random.choice(self.characteristic_list))
 
 
+#assign target image variable
 target_image = Image.open("c:/temp/target.jpg")
-#image2 = Image.open("elmerFuddExplode.jpg")
-#get_difference(image1, image2)
 
 #get the dimensions of the target image
 target_image_width, target_image_height = target_image.size
 
 print("Image size is " + str(target_image_width) + " wide by ", str(target_image_height) + " high.")
 
+#calculate the max initial characteristic size in pixels based on width
+max_initial_characteristic_pixels = int(round(target_image_width/100 * characteristic_percent))
+
 parent_organism = Organism(target_image_width, target_image_height)
 
-#debug
-#print(str(organism1.characteristic_list[0].r))
 
 #create an image in memory
 parent_organism_image = drawTheOrganism(parent_organism, target_image_width, target_image_height)
 
-#save the image to disk
+#save the parent image to disk
 parent_organism_image.save('C:\\temp\\_original_parent_organism.jpg')
 
 #find the initial difference
@@ -326,7 +334,7 @@ for y in range(50000):
     #save the image to disk occasionally (for later video creation)
     if y % 5 == 0:
         #create a file path string
-        file_path_string = 'C:\\GenAlgImageData\\2020_01_20 Beach Ball\\current_parent_organism_gen' + str(y) + '.jpg'
+        file_path_string = out_image_file_path + str(y).zfill(5) + '.jpg'
         parent_organism_image.save(file_path_string)
 
     #report some stats occasionally
