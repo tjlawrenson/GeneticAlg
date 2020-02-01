@@ -6,7 +6,7 @@ import copy
 
 
 #set the location and base file name of the images
-out_image_file_path = 'C:\\GenAlgImageData\\2020_01_29 pointy haired boss\\boss'
+out_image_file_path = 'C:\\GenAlgImageData\\2020_01_31_pointy_haired_boss\\boss'
 
 #set the maximum initial characteristic size as a percentage of the original image width
 characteristic_percent = 8
@@ -275,6 +275,10 @@ parent_organism_image.save('C:\\temp\\_original_parent_organism.jpg')
 #find the initial difference
 current_parent_difference = get_difference(parent_organism_image,target_image)
 
+#create an image number variable that will be used for file names 
+#for the sanity of the app creating the video, this cannot equal the generation since we're not saving all generations
+image_number = 0
+
 #loop through the generations
 for y in range(50000):
 
@@ -301,49 +305,61 @@ for y in range(50000):
 
 
     #find the organism closest to the target
+    #if the first child is most similar to the target
     if list_of_sums[0] <= list_of_sums[1] and list_of_sums[0] <= list_of_sums[2] and list_of_sums[0] <= current_parent_difference:
+        #make this the parent of the next generation
         parent_organism = child1_organism #pointing the parent_organism variable to this object
         
-        #print and re-assign the current sum of differences        
-        #print("Generation: " + str(y) + "  Current sum: " + str(list_of_sums[0]), flush = True)
-        current_parent_difference = list_of_sums[0]
+        #re-assign the current sum of differences        
+        new_parent_difference = list_of_sums[0]
 
+    #if the second child is most similar to the target
     elif list_of_sums[1] <= list_of_sums[0] and list_of_sums[1] <= list_of_sums[2] and list_of_sums[1] <= current_parent_difference:
+        #make this the parent of the next generation
         parent_organism = child2_organism #pointing the parent_organism variable to this object
 
-        #print and re-assign the current sum of differences   
-        #print("Generation: " + str(y) + "  Current sum: " + str(list_of_sums[1]), flush=True)
-        current_parent_difference = list_of_sums[1]
+        #re-assign the current sum of differences   
+        new_parent_difference = list_of_sums[1]
 
+    #if the third child is most similar to the target    
     elif list_of_sums[2] <= list_of_sums[0] and list_of_sums[2] <= list_of_sums[1] and list_of_sums[2] <= current_parent_difference:
+        #make this the parent of the next generation
         parent_organism = child3_organism #pointing the parent_organism variable to this object
         
-        #print and re-assign the current sum of differences   
-        #print("Generation: " + str(y) + "  Current sum: " + str(list_of_sums[2]), flush=True)
-        current_parent_difference = list_of_sums[2]
+        #re-assign the current sum of differences   
+        new_parent_difference = list_of_sums[2]
 
-    #else the parent survives to have another generation of children!
+    else: #the parent survives to have another generation of children!
+        new_parent_difference = current_parent_difference
 
-    #create an image in memory to save to disk
-    parent_organism_image = drawTheOrganism(parent_organism, target_image_width, target_image_height)
+    #if a child has become the parent of the next generation
+    if new_parent_difference < current_parent_difference:
 
-    #save the image to disk occasionally (for ongoing visual)
-    if y % 5 == 0:
+        #create an image in memory to save to disk
+        parent_organism_image = drawTheOrganism(parent_organism, target_image_width, target_image_height)
+
+        #save the image used for an ongoing visual
         parent_organism_image.save('C:\\temp\\current_parent_organism.jpg')
 
-    #save the image to disk occasionally (for later video creation)
-    if y % 5 == 0:
-        #create a file path string
-        file_path_string = out_image_file_path + str(y).zfill(5) + '.jpg'
+        #create a file path string and save the image to disk (for later video creation)
+        file_path_string = out_image_file_path + str(image_number).zfill(5) + '.jpg'
         parent_organism_image.save(file_path_string)
+
+        #increment the image number
+        image_number += 1
+
+        #reset the current_parent_difference
+        current_parent_difference = new_parent_difference
+        
 
     #report some stats occasionally
     if y % 5 == 0:
         #calculate highest possible color difference
         max_color_difference = (target_image_width * target_image_height) * (255 * 3)
+        color_percentage_reached = 100 * (max_color_difference - current_parent_difference) / max_color_difference
         print("Gen: " + str(y) + \
             "  Characteristics: " + str(len(parent_organism.characteristic_list)) + \
-            "  Color percentage reached: " + str(100 * (max_color_difference -current_parent_difference) / max_color_difference), flush=True)
+            "  Color percentage reached: " + str(color_percentage_reached), flush=True)
 
 
 
